@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation 'junit:junit:4.13.1'
 }
 
 task 'create-dirs' {

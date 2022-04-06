@@ -1,10 +1,8 @@
 object WallService {
     private var notes = mutableListOf<Notes>()
     private var notesRemove = mutableListOf<Notes>()
-    public var comments = mutableListOf<Notes.Comments>()
+    private var comments = mutableListOf<Notes.Comments>()
     private var commentsRemove = mutableListOf<Notes.Comments>()
-    val error = PostNotFoundException()
-
 
     fun add(note: Notes): Notes {
         notes.add(note)
@@ -17,7 +15,8 @@ object WallService {
         return notes
     }
 
-    fun removeComment(comment: Notes.Comments): Boolean {
+    fun removeComment(notes: Notes, comment: Notes.Comments): Boolean {
+        if (notes.comments == comment) notes.comments = Notes.Comments(null, null)
         commentsRemove.add(comment)
         comments.remove(comment)
         return true
@@ -35,21 +34,21 @@ object WallService {
             if (note.noteIds == noteId) {
                 notes.remove(note)
                 notes.add(notess)
+                comments.add(notess.comments)
             }
         }
         return notes.last()
     }
 
-    fun editComment(comment: Notes.Comments): Notes.Comments {
-        val editComment = comment
-        val commentId = comment.id
-        for ((index, comment) in comments.withIndex()) {
+    fun editComment(commentNew: Notes.Comments): Notes.Comments? {
+        val commentId = commentNew.id
+        for (comment in comments)
             if (comment.id == commentId) {
                 comments.remove(comment)
-                comments.add(editComment)
-            }
-        }
-        return comments.last()
+                comments.add(commentNew)
+                return comments.last()
+            } else throw PostNotFoundException()
+        return null
     }
 
     fun get(note: Notes): Notes {
@@ -72,5 +71,11 @@ object WallService {
     private fun generationId(): Int {
         memoryIdPost += 1
         return memoryIdPost - 1
+    }
+
+    fun clearArr() {
+        comments.clear()
+        notes.clear()
+        memoryIdPost = 1
     }
 }
