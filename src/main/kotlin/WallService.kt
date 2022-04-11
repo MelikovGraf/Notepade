@@ -44,10 +44,10 @@ object WallService {
         val commentId = commentNew.id
         for (comment in comments)
             if (comment.id == commentId) {
-                comments.remove(comment)
                 comments.add(commentNew)
+                comments.remove(comment)
                 return comments.last()
-            } else throw PostNotFoundException()
+            } else throw PostNotFoundException("Error")
         return null
     }
 
